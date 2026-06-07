@@ -1,0 +1,421 @@
+/* ============================================================
+   ARCHIVO: src/styles/global.css
+   DESCRIPCIÓN: Estilos globales del sistema MME
+   VERSIÓN: 2.0
+   FECHA: 2026-06-05
+   ============================================================
+   CONTENIDO:
+   1. Reset y variables CSS
+   2. Tipografía y elementos base
+   3. Botones globales
+   4. Cards y contenedores
+   5. Tablas
+   6. Badges y etiquetas
+   7. Formularios
+   8. Alertas y mensajes
+   9. Utilidades
+   ============================================================ */
+
+/* ────────────────────────────────────────────────────────── */
+/* 1. RESET Y VARIABLES CSS                                    */
+/* ────────────────────────────────────────────────────────── */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Colores principales */
+  --cyan: #00d4ff;
+  --cyan-dim: rgba(0, 212, 255, 0.1);
+  --cyan-glow: rgba(0, 212, 255, 0.3);
+  
+  /* Estados */
+  --success: #00ff88;
+  --success-dim: rgba(0, 255, 136, 0.1);
+  --danger: #ff4444;
+  --danger-dim: rgba(255, 68, 68, 0.1);
+  --warning: #ffaa00;
+  --warning-dim: rgba(255, 170, 0, 0.1);
+  
+  /* Fondos */
+  --bg-dark: #0a0a1a;
+  --bg-card: rgba(255, 255, 255, 0.05);
+  --bg-card-hover: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* Layout */
+  --sidebar-width: 320px;
+  --header-height: 60px;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Inter', system-ui, sans-serif;
+  background: linear-gradient(135deg, #0a0a1a 0%, #0f0f2a 50%, #0a0a2a 100%);
+  min-height: 100vh;
+  color: #e0e0e0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 2. TIPOGRAFÍA                                              */
+/* ────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 1.8rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.1rem; }
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #66e4ff;
+  text-decoration: underline;
+}
+
+code {
+  font-family: 'Consolas', 'Monaco', 'Fira Code', monospace;
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 3. BOTONES GLOBALES                                        */
+/* ────────────────────────────────────────────────────────── */
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.btn {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan), #0099bb);
+  color: #1a1a2e;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--cyan-glow);
+}
+
+.btn-danger {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(255, 68, 68, 0.25);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-ghost:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.btn-cyan {
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.btn-cyan:hover {
+  background: rgba(0, 212, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 4. CARDS Y CONTENEDORES                                    */
+/* ────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--cyan-glow);
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 5. TABLAS                                                  */
+/* ────────────────────────────────────────────────────────── */
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: rgba(0, 212, 255, 0.08);
+  color: var(--cyan);
+  padding: 11px 15px;
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.table td {
+  padding: 11px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 6. BADGES Y ETIQUETAS                                      */
+/* ────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.badge-available,
+.badge-disponible {
+  background: var(--success-dim);
+  color: var(--success);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.badge-assigned,
+.badge-prestado {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+.badge-maintenance,
+.badge-reparacio {
+  background: var(--warning-dim);
+  color: var(--warning);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+}
+
+.badge-review {
+  background: rgba(170, 102, 255, 0.12);
+  color: #aa66ff;
+  border: 1px solid rgba(170, 102, 255, 0.3);
+}
+
+.badge-admin {
+  background: rgba(255, 215, 0, 0.12);
+  color: #ffd700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.badge-bip {
+  background: rgba(255, 136, 0, 0.12);
+  color: #ff8800;
+  border: 1px solid rgba(255, 136, 0, 0.3);
+}
+
+.badge-user {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 7. FORMULARIOS                                             */
+/* ────────────────────────────────────────────────────────── */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+.field select option {
+  background: #16213e;
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 8. ALERTAS                                                 */
+/* ────────────────────────────────────────────────────────── */
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.alert-error {
+  background: var(--danger-dim);
+  border: 1px solid var(--danger);
+  color: #ff8888;
+}
+
+.alert-success {
+  background: var(--success-dim);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.alert-info {
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+}
+
+.alert-warning {
+  background: var(--warning-dim);
+  border: 1px solid var(--warning);
+  color: var(--warning);
+}
+
+/* ────────────────────────────────────────────────────────── */
+/* 9. UTILIDADES                                              */
+/* ────────────────────────────────────────────────────────── */
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.9rem;
+}
+
+.empty-state,
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* Flex utilities */
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+
+/* Text colors */
+.text-cyan { color: var(--cyan); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+
+/* Backgrounds */
+.bg-cyan-dim { background: var(--cyan-dim); }
+.bg-card { background: var(--bg-card); }
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cyan);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #66e4ff;
+}
+
+/* Animaciones globales */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease;
+}

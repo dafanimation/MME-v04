@@ -1,0 +1,21 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: DeepSeek Coder Chat
+    provider: ollama
+    model: deepseek-coder
+    roles:
+      - chat
+      - edit
+      - apply
+  - name: DeepSeek Coder Autocomplete
+    provider: ollama
+    model: deepseek-coder
+    roles:
+      - autocomplete
+  - name: Nomic Embed
+    provider: ollama
+    model: nomic-embed-text:latest
+    roles:
+      - embed
