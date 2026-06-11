@@ -12,14 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WhitelistEntry = void 0;
 const typeorm_1 = require("typeorm");
 let WhitelistEntry = class WhitelistEntry {
-    id;
-    email;
-    academicYear;
-    module;
-    isActive;
-    canEdit;
-    approvedBy;
-    approvedAt;
 };
 exports.WhitelistEntry = WhitelistEntry;
 __decorate([

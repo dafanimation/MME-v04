@@ -75,6 +75,7 @@ const MenuAdmin = () => {
     {
       label: 'Activitats', icon: '🗂️',
       items: [
+        { path: '/actividades', icon: '📚', label: 'Actividades 3D' },
         { path: '/dashboard?section=activities&activity=UD01&year=2026', icon: '📘', label: 'UD01 · 2026' },
         { path: '/dashboard?section=activities&activity=UD02&year=2026', icon: '📙', label: 'UD02 · 2026' },
         { path: '/dashboard?section=activities&activity=UD03&year=2026', icon: '📒', label: 'UD03 · 2026' },
@@ -95,6 +96,7 @@ const MenuAdmin = () => {
     {
       label: 'Visualizacion', icon: '🖥️',
       items: [
+        { path: '/admin-actividades', icon: '✏️', label: 'Gestión Actividades' },
         { path: '/dashboard?room=AULA&view=joint', icon: '🔀', label: 'Vista conjunta AULA' },
         { path: '/dashboard?room=SALAPRU&view=joint', icon: '🧪', label: 'Vista conjunta SALAPRU' },
         { path: '/dashboard?room=SALATEST&activity=UD01&view=joint', icon: '🧫', label: 'Sala Test UD01' },
@@ -165,6 +167,7 @@ const MenuAdmin = () => {
     {
       label: 'Config General', icon: '⚙️',
       items: [
+        { path: '/admin-actividades', icon: '✏️', label: 'Gestión Actividades' },
         { path: '/elemento', icon: '🧩', label: 'Editor de elementos' },
         { path: '/capture', icon: '📸', label: 'Captura de imagen' },
         { path: '/configuracion?tab=resource-design', icon: '🎨', label: 'Diseno recursos' },

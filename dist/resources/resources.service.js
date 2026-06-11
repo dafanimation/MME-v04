@@ -19,8 +19,6 @@ const typeorm_2 = require("typeorm");
 const resource_model_1 = require("./resource.model");
 const user_model_1 = require("../users/user.model");
 let ResourceService = class ResourceService {
-    resourceRepository;
-    userRepository;
     constructor(resourceRepository, userRepository) {
         this.resourceRepository = resourceRepository;
         this.userRepository = userRepository;

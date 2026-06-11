@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const storage_locations_service_1 = require("./storage-locations.service");
 let StorageLocationsController = class StorageLocationsController {
-    storageLocationsService;
     constructor(storageLocationsService) {
         this.storageLocationsService = storageLocationsService;
     }

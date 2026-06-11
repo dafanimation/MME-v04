@@ -12,24 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SpaceElement = void 0;
 const typeorm_1 = require("typeorm");
 let SpaceElement = class SpaceElement {
-    id;
-    room;
-    elementUid;
-    template;
-    name;
-    shape;
-    dims;
-    x;
-    z;
-    yOffset;
-    rotationY;
-    borderColor;
-    fillColor;
-    fillOpacity;
-    assignment;
-    createdByEmail;
-    createdAt;
-    updatedAt;
 };
 exports.SpaceElement = SpaceElement;
 __decorate([

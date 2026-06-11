@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
 const import_export_service_1 = require("./import-export.service");
 let ImportExportController = class ImportExportController {
-    importExportService;
     constructor(importExportService) {
         this.importExportService = importExportService;
     }

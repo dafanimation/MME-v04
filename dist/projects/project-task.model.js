@@ -12,17 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectTask = void 0;
 const typeorm_1 = require("typeorm");
 let ProjectTask = class ProjectTask {
-    id;
-    projectId;
-    udActivityId;
-    activityCode;
-    ownerUserEmail;
-    mesaNum;
-    resourceCode;
-    status;
-    notes;
-    createdAt;
-    updatedAt;
 };
 exports.ProjectTask = ProjectTask;
 __decorate([

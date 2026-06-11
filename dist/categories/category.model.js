@@ -12,10 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Category = void 0;
 const typeorm_1 = require("typeorm");
 let Category = class Category {
-    id;
-    name;
-    description;
-    createdAt;
 };
 exports.Category = Category;
 __decorate([

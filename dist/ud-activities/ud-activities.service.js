@@ -22,11 +22,6 @@ const history_model_1 = require("../history/history.model");
 const resource_model_1 = require("../resources/resource.model");
 const user_model_1 = require("../users/user.model");
 let UdActivitiesService = class UdActivitiesService {
-    udRepo;
-    taskRepo;
-    historyRepo;
-    userRepo;
-    resourceRepo;
     constructor(udRepo, taskRepo, historyRepo, userRepo, resourceRepo) {
         this.udRepo = udRepo;
         this.taskRepo = taskRepo;

@@ -26,11 +26,6 @@ const history_model_1 = require("../history/history.model");
 const resource_model_1 = require("../resources/resource.model");
 const user_model_1 = require("../users/user.model");
 let ProjectsService = class ProjectsService {
-    projectRepo;
-    taskRepo;
-    historyRepo;
-    userRepo;
-    resourceRepo;
     constructor(projectRepo, taskRepo, historyRepo, userRepo, resourceRepo) {
         this.projectRepo = projectRepo;
         this.taskRepo = taskRepo;

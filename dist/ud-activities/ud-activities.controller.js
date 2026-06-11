@@ -20,7 +20,6 @@ const path_1 = require("path");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const ud_activities_service_1 = require("./ud-activities.service");
 let UdActivitiesController = class UdActivitiesController {
-    udActivitiesService;
     constructor(udActivitiesService) {
         this.udActivitiesService = udActivitiesService;
     }

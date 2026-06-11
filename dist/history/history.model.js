@@ -12,20 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.History = void 0;
 const typeorm_1 = require("typeorm");
 let History = class History {
-    id;
-    userId;
-    userName;
-    action;
-    resourceId;
-    resourceCode;
-    details;
-    activityId;
-    oldValue;
-    newValue;
-    notes;
-    createdBy;
-    metadata;
-    createdAt;
 };
 exports.History = History;
 __decorate([

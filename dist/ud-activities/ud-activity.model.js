@@ -12,20 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UdActivity = void 0;
 const typeorm_1 = require("typeorm");
 let UdActivity = class UdActivity {
-    id;
-    udCode;
-    title;
-    date;
-    statement;
-    requiredEquipment;
-    assignmentMode;
-    resourceTypes;
-    links;
-    images;
-    projectId;
-    status;
-    createdAt;
-    updatedAt;
 };
 exports.UdActivity = UdActivity;
 __decorate([

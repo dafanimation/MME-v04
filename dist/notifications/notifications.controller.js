@@ -18,7 +18,6 @@ const rxjs_1 = require("rxjs");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const notifications_service_1 = require("./notifications.service");
 let NotificationsController = class NotificationsController {
-    notificationsService;
     constructor(notificationsService) {
         this.notificationsService = notificationsService;
     }

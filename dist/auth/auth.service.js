@@ -20,9 +20,6 @@ const typeorm_2 = require("typeorm");
 const user_model_1 = require("../users/user.model");
 const whitelist_model_1 = require("../admin/whitelist.model");
 let AuthService = class AuthService {
-    userRepository;
-    whitelistRepository;
-    jwtService;
     constructor(userRepository, whitelistRepository, jwtService) {
         this.userRepository = userRepository;
         this.whitelistRepository = whitelistRepository;

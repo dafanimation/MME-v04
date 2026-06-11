@@ -12,25 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Resource = void 0;
 const typeorm_1 = require("typeorm");
 let Resource = class Resource {
-    id;
-    code;
-    name;
-    os;
-    cpu;
-    ghz;
-    bits;
-    motherboard;
-    ram;
-    storage;
-    qrCode;
-    extras;
-    notes;
-    status;
-    type;
-    assignedToUserId;
-    createdAt;
-    driveLink;
-    location;
 };
 exports.Resource = Resource;
 __decorate([

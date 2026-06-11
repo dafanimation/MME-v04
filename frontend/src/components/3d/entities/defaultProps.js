@@ -1,5 +1,7 @@
 // Props de ejemplo para componentes 3D
 // Sirve para que la vista catálogo muestre entidades sin depender de datos externos
+// Props de ejemplo para componentes 3D
+// Sirve para que la vista catálogo muestre entidades sin depender de datos externos
 const defaultProps = {
   Armario3D: {
     armario: { id: 1, num: 1, label: 'Armario Demo', tipo: 'principal', niveles: 6, capacidadTotal: 24 },
@@ -87,7 +89,8 @@ const defaultProps = {
   },
 
   Usuario3D: {
-    user: { id: 1, name: 'Alumno', email: 'test@test.com', group: 'MME' }
+    user: { id: 1, name: 'Ana López', email: 'ana@example.com', group: 'MME', avatarColor: '#ff66cc' },
+    isActive: true,
   },
 
   Webcam3D: {

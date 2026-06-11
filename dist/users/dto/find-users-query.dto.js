@@ -13,11 +13,10 @@ exports.FindUsersQueryDto = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class FindUsersQueryDto {
-    active;
-    role;
-    kingdom;
-    page = 1;
-    limit = 10;
+    constructor() {
+        this.page = 1;
+        this.limit = 10;
+    }
 }
 exports.FindUsersQueryDto = FindUsersQueryDto;
 __decorate([

@@ -18,7 +18,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const space_element_model_1 = require("./space-element.model");
 let SpaceElementsService = class SpaceElementsService {
-    repo;
     constructor(repo) {
         this.repo = repo;
     }

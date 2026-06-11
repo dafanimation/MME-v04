@@ -20,7 +20,6 @@ const update_resource_dto_1 = require("./dto/update-resource.dto");
 const resource_service_1 = require("./resource.service");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let ResourcesController = class ResourcesController {
-    resourceService;
     constructor(resourceService) {
         this.resourceService = resourceService;
     }

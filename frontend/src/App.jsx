@@ -39,7 +39,8 @@ import MiActividad from './pages/MiActividad';
 import MiPerfil from './pages/MiPerfil';
 import Configuracion from './pages/Configuracion';
 import Usuarios from './pages/Usuarios';
-
+import AdminActividades from './pages/AdminActividades';
+import ActividadesView from './pages/ActividadesView';
 // Componentes UI
 import FichaRecurso from './components/ui/FichaRecurso';
 
@@ -161,7 +162,24 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route 
+          path="/admin-actividades" 
+          element={
+            <PrivateRoute requiredRole="admin">
+              <AdminActividades />
+            </PrivateRoute>
+          } 
+        />
 
+        <Route 
+          path="/actividades" 
+          element={
+            <PrivateRoute>
+              <ActividadesView />
+            </PrivateRoute>
+          } 
+        />
+        
         {/* Sala de gestión de Caja de Herramientas */}
         <Route
           path="/caja-herramientas"

@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const path_1 = require("path");
 let AppController = class AppController {
-    appService;
     constructor(appService) {
         this.appService = appService;
     }

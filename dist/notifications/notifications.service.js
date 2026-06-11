@@ -11,7 +11,9 @@ const common_1 = require("@nestjs/common");
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 let NotificationsService = class NotificationsService {
-    events$ = new rxjs_1.Subject();
+    constructor() {
+        this.events$ = new rxjs_1.Subject();
+    }
     push(notification) {
         this.events$.next({
             ...notification,

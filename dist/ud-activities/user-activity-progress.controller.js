@@ -19,7 +19,6 @@ const roles_guard_1 = require("../guards/roles.guard");
 const roles_decorator_1 = require("../decorators/roles.decorator");
 const user_activity_progress_service_1 = require("./user-activity-progress.service");
 let UserActivityProgressController = class UserActivityProgressController {
-    progressService;
     constructor(progressService) {
         this.progressService = progressService;
     }
@@ -106,7 +105,6 @@ exports.UserActivityProgressController = UserActivityProgressController = __deco
     __metadata("design:paramtypes", [user_activity_progress_service_1.UserActivityProgressService])
 ], UserActivityProgressController);
 let ActivityReportsController = class ActivityReportsController {
-    progressService;
     constructor(progressService) {
         this.progressService = progressService;
     }

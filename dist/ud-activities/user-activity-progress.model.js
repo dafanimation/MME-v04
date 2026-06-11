@@ -12,20 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserActivityProgress = void 0;
 const typeorm_1 = require("typeorm");
 let UserActivityProgress = class UserActivityProgress {
-    id;
-    userId;
-    activityId;
-    status;
-    progressPercent;
-    completedSteps;
-    completedCheckmarks;
-    grade;
-    submittedAt;
-    validatedBy;
-    returnedReason;
-    resourcesUsed;
-    createdAt;
-    updatedAt;
 };
 exports.UserActivityProgress = UserActivityProgress;
 __decorate([

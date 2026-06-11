@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const space_elements_service_1 = require("./space-elements.service");
 let SpaceElementsController = class SpaceElementsController {
-    service;
     constructor(service) {
         this.service = service;
     }

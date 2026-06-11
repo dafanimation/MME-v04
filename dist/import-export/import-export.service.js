@@ -52,7 +52,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const resource_model_1 = require("../resources/resource.model");
 let ImportExportService = class ImportExportService {
-    resourceRepository;
     constructor(resourceRepository) {
         this.resourceRepository = resourceRepository;
     }

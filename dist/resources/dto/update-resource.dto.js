@@ -12,23 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateResourceDto = void 0;
 const class_validator_1 = require("class-validator");
 class UpdateResourceDto {
-    code;
-    name;
-    os;
-    cpu;
-    ghz;
-    bits;
-    motherboard;
-    ram;
-    storage;
-    qrCode;
-    extras;
-    notes;
-    status;
-    type;
-    driveLink;
-    userId;
-    location;
 }
 exports.UpdateResourceDto = UpdateResourceDto;
 __decorate([

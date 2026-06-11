@@ -12,18 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StorageLocation = void 0;
 const typeorm_1 = require("typeorm");
 let StorageLocation = class StorageLocation {
-    id;
-    type;
-    zone;
-    row;
-    module;
-    label;
-    room;
-    capacity;
-    active;
-    coordinates;
-    createdAt;
-    updatedAt;
 };
 exports.StorageLocation = StorageLocation;
 __decorate([

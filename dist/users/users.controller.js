@@ -19,7 +19,6 @@ const find_users_query_dto_1 = require("./dto/find-users-query.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const users_service_1 = require("./users.service");
 let UsersController = class UsersController {
-    usersService;
     constructor(usersService) {
         this.usersService = usersService;
     }

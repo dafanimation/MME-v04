@@ -15,7 +15,6 @@ const passport_1 = require("@nestjs/passport");
 const passport_jwt_1 = require("passport-jwt");
 const auth_service_1 = require("./auth.service");
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    authService;
     constructor(authService) {
         const jwtSecret = process.env.JWT_SECRET || 'clau_per_defecte_nomes_per_dev';
         console.log('🔐 JWTStrategy inicialitzat amb secret:', jwtSecret.substring(0, 10) + '...');

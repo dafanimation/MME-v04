@@ -54,9 +54,15 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const ExcelJS = __importStar(require("exceljs"));
 let AdminService = class AdminService {
-    whitelistRepository;
     constructor(whitelistRepository) {
         this.whitelistRepository = whitelistRepository;
+        this.defaultHelpDocs = {
+            usuarios: `# Ajuda usuaris\n\n- Login: POST /api/auth/login\n- Token JWT: Bearer a cada peticio\n- Veure meus recursos: GET /api/resources/my\n- Autoassignar recurs: POST /api/resources/self-assign\n- Alliberar recurs propi: POST /api/resources/release\n`,
+            grupos: `# Ajuda grups (mode informatiu)\n\n- Objectiu: associar alumnes, recursos i mesa de projecte.\n- Estat recomanat: planificacio -> desenvolupament -> exposicio -> completat.\n`,
+            apiMetodos: `# Metodes funcionals API\n\nAuth\n- POST /api/auth/login\n\nRecursos\n- GET /api/resources\n- GET /api/resources/my\n- POST /api/resources/self-assign\n- POST /api/resources/assign\n- POST /api/resources/release\n\nAdmin\n- GET /api/admin/whitelist\n- POST /api/admin/whitelist\n- DELETE /api/admin/whitelist/:email\n- POST /api/admin/whitelist/close-year\n`,
+        };
+        this.getHelpDocsPath = () => path.join(process.cwd(), 'data', 'help-docs.json');
+        this.getHelpDocsHistoryPath = () => path.join(process.cwd(), 'data', 'help-docs-history.json');
     }
     async onModuleInit() {
         const count = await this.whitelistRepository.count();
@@ -156,13 +162,6 @@ let AdminService = class AdminService {
             affected: result.affected ?? 0,
         };
     }
-    defaultHelpDocs = {
-        usuarios: `# Ajuda usuaris\n\n- Login: POST /api/auth/login\n- Token JWT: Bearer a cada peticio\n- Veure meus recursos: GET /api/resources/my\n- Autoassignar recurs: POST /api/resources/self-assign\n- Alliberar recurs propi: POST /api/resources/release\n`,
-        grupos: `# Ajuda grups (mode informatiu)\n\n- Objectiu: associar alumnes, recursos i mesa de projecte.\n- Estat recomanat: planificacio -> desenvolupament -> exposicio -> completat.\n`,
-        apiMetodos: `# Metodes funcionals API\n\nAuth\n- POST /api/auth/login\n\nRecursos\n- GET /api/resources\n- GET /api/resources/my\n- POST /api/resources/self-assign\n- POST /api/resources/assign\n- POST /api/resources/release\n\nAdmin\n- GET /api/admin/whitelist\n- POST /api/admin/whitelist\n- DELETE /api/admin/whitelist/:email\n- POST /api/admin/whitelist/close-year\n`,
-    };
-    getHelpDocsPath = () => path.join(process.cwd(), 'data', 'help-docs.json');
-    getHelpDocsHistoryPath = () => path.join(process.cwd(), 'data', 'help-docs-history.json');
     async ensureDataDir() {
         const dir = path.join(process.cwd(), 'data');
         if (!fs.existsSync(dir))
