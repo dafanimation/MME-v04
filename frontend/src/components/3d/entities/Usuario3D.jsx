@@ -6,7 +6,7 @@
 
 import React, { useState } from 'react'
 import { Sphere, Edges, Text, Html } from '@react-three/drei'
-import { USUARIO, USER_Y } from '../core/config'
+import { USUARIO, USER_Y, COLORS } from '../core/config'
 
 export const Usuario3D = ({ 
   user, position, isActive = true, isSelected = false, onClick 

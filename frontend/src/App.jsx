@@ -18,6 +18,10 @@
 // /armario/:id    → Vista dedicada de armario (solo admin)
 // /               → Redirige a /dashboard
 //
+import ElementoViewMinimal from './pages/ElementoViewMinimal'
+
+// Añadir ruta
+<Route path="/test" element={<ElementoViewMinimal />} />
 // ============================================================
 
 import React from 'react';
@@ -44,6 +48,7 @@ import FichaRecurso from './components/ui/FichaRecurso';
 
 // ✅ NUEVA: Vista dedicada de armarios
 import ArmarioView from './pages/ArmarioView';
+import ElementoView from './pages/ElementoView';
 
 // Estilos globales
 import './styles/global.css';
@@ -133,6 +138,16 @@ function App() {
               <ArmarioView />
             </PrivateRoute>
           } 
+        />
+
+        {/* Nueva vista para edición simple de entidades */}
+        <Route
+          path="/elemento"
+          element={
+            <PrivateRoute requiredRole="admin">
+              <ElementoView />
+            </PrivateRoute>
+          }
         />
         
         {/* Redirección por defecto */}

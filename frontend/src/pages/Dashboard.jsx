@@ -13,6 +13,7 @@ import { useSessionTimeout } from '../hooks/useSessionTimeout';
 import MenuAdmin from '../components/menus/MenuAdmin'
 import { Mapa3D } from '../components/3d/core/Mapa3D';
 import { AlumnoWorkflowPanel } from '../components/panels/AlumnoWorkflowPanel';
+import ElementoPreviewPanel from '../components/menus/ElementoPreviewPanel';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -23,7 +24,8 @@ const Dashboard = () => {
   const timeLeft = useSessionTimeout(userIsAdmin);
   
   const room = searchParams.get('room') || 'AULA';
-  const view = searchParams.get('view') || 'joint';
+  const activity = searchParams.get('activity') || '';
+  const view = searchParams.get('view') || (searchParams.get('compact') === '1' ? 'compact' : (room === 'SALATEST' && activity === 'UD01' ? 'compact' : 'joint'));
   const section = searchParams.get('section') || 'map';
   
   const [stats, setStats] = useState({ total_resources: 0, available_resources: 0, assigned_resources: 0 });
@@ -57,6 +59,13 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleViewChange = (newView) => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('compact');
+    params.set('view', newView);
+    navigate(`/dashboard?${params.toString()}`);
   };
   
   const handleLocateResource = (code, location) => {
@@ -140,22 +149,32 @@ const Dashboard = () => {
         </div>
         
         {/* Panel derecho - mapa 3D */}
-        <div className="dashboard-map">
-          <div className="map-header">
-            <h2>🗺️ {room === 'SALATEST' ? 'Sala Test (Editor)' : (room === 'SALAPRU' ? 'Sala PRU' : 'Aula Taller')}</h2>
-            <div className="view-controls">
-              <button className={`view-btn ${view === 'joint' ? 'active' : ''}`}>Vista conjunta</button>
-              <button className={`view-btn ${view === 'compact' ? 'active' : ''}`}>Compacte</button>
+        <div className="dashboard-map" style={{ display: 'flex', flexDirection: (room === 'SALATEST' && activity === 'UD01' && view === 'compact') ? 'row' : 'column', gap: (room === 'SALATEST' && activity === 'UD01' && view === 'compact') ? '16px' : '0', minHeight: '0', width: '100%', height: '100%' }}>
+          <div style={{ minWidth: 0, minHeight: 0, height: '100%', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div className="map-header">
+              <h2>🗺️ {room === 'SALATEST' ? 'Sala Test (Editor)' : (room === 'SALAPRU' ? 'Sala PRU' : 'Aula Taller')}</h2>
+              <div className="view-controls">
+                <button className={`view-btn ${view === 'joint' ? 'active' : ''}`} onClick={() => handleViewChange('joint')}>Vista conjunta</button>
+                <button className={`view-btn ${view === 'compact' ? 'active' : ''}`} onClick={() => handleViewChange('compact')}>Compacte</button>
+              </div>
+            </div>
+
+            <div style={{ flex: 1, minHeight: 0 }}>
+              <Mapa3D
+                room={room}
+                recursos={mode === 'mine' ? myResources : (mode === 'available' ? availableResources : [])}
+                usuarios={[]}
+                selectedResource={selectedResource}
+                currentUser={user}
+              />
             </div>
           </div>
-          
-          <Mapa3D
-            room={room}
-            recursos={mode === 'mine' ? myResources : (mode === 'available' ? availableResources : [])}
-            usuarios={[]}
-            selectedResource={selectedResource}
-            currentUser={user}
-          />
+
+          {(room === 'SALATEST' && activity === 'UD01' && view === 'compact') && (
+            <div style={{ minWidth: 0, minHeight: 0, height: '100%', width: '320px', display: 'flex', flexDirection: 'column' }}>
+              <ElementoPreviewPanel />
+            </div>
+          )}
         </div>
       </div>
     </div>

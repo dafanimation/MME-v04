@@ -8,6 +8,55 @@
 import React, { useState } from 'react'
 import { Box, Edges, Text, Html } from '@react-three/drei'
 import { ARMARIO, COLORS } from '../core/config'
+import { CajaHerramientas3D } from './CajaHerramientas3D'
+
+// Helpers para layout de armario
+const getRecursoSize = (recurso) => {
+  const tipo = recurso.tipo?.toLowerCase() || ''
+  if (tipo.includes('portatil') || tipo.includes('laptop')) {
+    return { width: 0.14, height: 0.04, depth: 0.2 }
+  }
+  if (tipo.includes('pantalla') || tipo.includes('monitor')) {
+    return { width: 0.16, height: 0.12, depth: 0.05 }
+  }
+  if (tipo.includes('herramienta') || tipo.includes('caja')) {
+    return { width: 0.18, height: 0.08, depth: 0.22 }
+  }
+  if (tipo.includes('impresora')) {
+    return { width: 0.18, height: 0.1, depth: 0.14 }
+  }
+  return { width: 0.12, height: 0.08, depth: 0.12 }
+}
+
+const getConsumibleSize = () => ({ width: 0.08, height: 0.06, depth: 0.08 })
+
+const getShelfGridPositions = (count, shelfWidth, shelfDepth, cellWidth, cellDepth, spacing = 0.03) => {
+  const availableWidth = Math.max(0.1, shelfWidth - spacing * 2)
+  const availableDepth = Math.max(0.1, shelfDepth - spacing * 2)
+  let cols = Math.max(1, Math.floor((availableWidth + spacing) / (cellWidth + spacing)))
+  let rows = Math.max(1, Math.ceil(count / cols))
+  const maxRows = Math.max(1, Math.floor((availableDepth + spacing) / (cellDepth + spacing)))
+
+  while (rows > maxRows && cols > 1) {
+    cols -= 1
+    rows = Math.max(1, Math.ceil(count / cols))
+  }
+
+  const xStart = -((cols - 1) * (cellWidth + spacing)) / 2
+  const zStart = -((rows - 1) * (cellDepth + spacing)) / 2
+  const positions = []
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      positions.push({
+        x: xStart + col * (cellWidth + spacing),
+        z: zStart + row * (cellDepth + spacing),
+      })
+    }
+  }
+
+  return positions.slice(0, count)
+}
 
 // ============================================
 // COMPONENTE: Recurso3D (caja genérica con apilamiento)
@@ -56,23 +105,10 @@ const Recurso3D = ({
   const alturaApilamiento = 0.08
   const yOffset = apilado * alturaApilamiento
   
-  // Distribución por filas y columnas para evitar solapamiento
-  const recursosPorFila = 4
-  const fila = Math.floor(index / recursosPorFila)
-  const columna = index % recursosPorFila
-  const offsetXFila = (columna - (recursosPorFila - 1) / 2) * 0.22
-  const offsetX = offsetXFila
-  const offsetZ = fila * 0.12 - 0.1
-  
   return (
     <group
-      position={[position.x, ARMARIO.height / 2, position.z]}
+      position={[position.x, position.y + yOffset, position.z]}
       onClick={(e) => { e.stopPropagation(); onClick?.(e) }}
-      onContextMenu={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-          if (editable) setShowConfig(true)  // ← AQUÍ se activa
-      }}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
     >
@@ -105,7 +141,6 @@ const Recurso3D = ({
 const Consumible3D = ({ 
   consumible, 
   position, 
-  index,
   onClick 
 }) => {
   const [hovered, setHovered] = useState(false)
@@ -116,14 +151,13 @@ const Consumible3D = ({
   ]
   
   const color = coloresPastel[consumible.id % coloresPastel.length]
-  const size = { width: 0.08, height: 0.06, depth: 0.08 }
-  const offsetX = (index - 4) * 0.15
+  const size = getConsumibleSize()
   const cantidad = consumible.cantidad || 1
   const showMultiple = cantidad > 1
   
   return (
     <group
-      position={[position.x + offsetX, position.y, position.z]}
+      position={[position.x, position.y, position.z]}
       onClick={(e) => { e.stopPropagation(); onClick?.(consumible, e) }}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
@@ -186,20 +220,18 @@ export const Armario3D = ({
   const fillColor = isSelected ? COLORS.selected : ARMARIO.colorFill
   const edgeColor = hovered ? COLORS.hover : ARMARIO.colorEdge
   
- // Reemplazar baldaPositions (4 niveles) con 6 niveles
-const baldaPositions = [
-  { y: ARMARIO.height * 0.45, nivel: 6, nombre: 'Superficie superior (Top)' },  // Nivel 6 - encima
-  { y: ARMARIO.height * 0.25, nivel: 5, nombre: 'Balda 4' },                      // Nivel 5
-  { y: ARMARIO.height * 0.05, nivel: 4, nombre: 'Balda 3' },                      // Nivel 4
-  { y: -ARMARIO.height * 0.15, nivel: 3, nombre: 'Balda 2' },                     // Nivel 3
-  { y: -ARMARIO.height * 0.35, nivel: 2, nombre: 'Balda 1' },                     // Nivel 2
-  { y: -ARMARIO.height * 0.55, nivel: 1, nombre: 'Fondo inferior' },              // Nivel 1
-]
+  // Generar posiciones de baldas con la superior y la base alineadas al extremo del armario
+  const niveles = 6
+  const pasoBaldas = ARMARIO.height / (niveles - 1)
+  const baldaPositions = Array.from({ length: niveles }, (_, i) => ({
+    y: ARMARIO.height / 2 - i * pasoBaldas,
+    nivel: niveles - i,
+    nombre: i === 0 ? 'Superficie superior' : i === niveles - 1 ? 'Base inferior' : `Balda ${niveles - i - 1}`,
+  }))
 
-// Actualizar capacidadPorNivel por defecto a 6 niveles
-capacidadPorNivel = [8, 8, 8, 8, 8, 4]  // fondo, balda1, balda2, balda3, balda4, top
-  
   const recursoZ = 0
+  const doorThickness = ARMARIO.tienePuertas ? 0.04 : 0
+  const baldaThickness = 0.001
   
   return (
     <group
@@ -222,11 +254,11 @@ capacidadPorNivel = [8, 8, 8, 8, 8, 4]  // fondo, balda1, balda2, balda3, balda4
       {/* Puertas transparentes */}
       {ARMARIO.tienePuertas && (
         <>
-          <Box args={[ARMARIO.width * 0.5, ARMARIO.height, 0.04]} position={[-ARMARIO.width * 0.25, 0, ARMARIO.depth / 2 + 0.02]}>
+          <Box args={[ARMARIO.width * 0.5, ARMARIO.height, doorThickness]} position={[-ARMARIO.width * 0.25, 0, ARMARIO.depth / 2 + doorThickness / 2]}>
             <meshStandardMaterial color="#88aacc" transparent opacity={0.3} />
             <Edges color="#aaccff" threshold={15} lineWidth={0.5} />
           </Box>
-          <Box args={[ARMARIO.width * 0.5, ARMARIO.height, 0.04]} position={[ARMARIO.width * 0.25, 0, ARMARIO.depth / 2 + 0.02]}>
+          <Box args={[ARMARIO.width * 0.5, ARMARIO.height, doorThickness]} position={[ARMARIO.width * 0.25, 0, ARMARIO.depth / 2 + doorThickness / 2]}>
             <meshStandardMaterial color="#88aacc" transparent opacity={0.3} />
             <Edges color="#aaccff" threshold={15} lineWidth={0.5} />
           </Box>
@@ -237,11 +269,19 @@ capacidadPorNivel = [8, 8, 8, 8, 8, 4]  // fondo, balda1, balda2, balda3, balda4
       {baldaPositions.map((balda, idx) => {
         const recursosBalda = baldas[idx]?.recursos || []
         const consumiblesBalda = consumibles.filter(c => c.balda === idx) || []
-        
+        const totalItems = recursosBalda.length + consumiblesBalda.length
+        const shelfWidth = ARMARIO.width * 0.92
+        const shelfDepth = ARMARIO.depth * 0.9
+        const resourceSizes = recursosBalda.map(getRecursoSize)
+        const consumibleSizes = consumiblesBalda.map(getConsumibleSize)
+        const maxCellWidth = Math.max(0.1, ...resourceSizes.map((s) => s.width), ...consumibleSizes.map((s) => s.width))
+        const maxCellDepth = Math.max(0.1, ...resourceSizes.map((s) => s.depth), ...consumibleSizes.map((s) => s.depth))
+        const positions = getShelfGridPositions(totalItems, shelfWidth, shelfDepth, maxCellWidth + 0.04, maxCellDepth + 0.04)
+
         return (
           <React.Fragment key={`balda-${idx}`}>
-            {/* Balda con borde, sin relleno - 98% del ancho de la base */}
-            <Box args={[ARMARIO.width * 0.98, 0.02, ARMARIO.depth * 0.98]} position={[0, balda.y, 0]}>
+            {/* Balda con borde, sin relleno, dentro del perímetro del armario */}
+            <Box args={[ARMARIO.width * 0.96, baldaThickness, ARMARIO.depth * 0.96]} position={[0, balda.y, recursoZ]}>
               <meshStandardMaterial 
                 color="#88aacc" 
                 transparent 
@@ -251,33 +291,57 @@ capacidadPorNivel = [8, 8, 8, 8, 8, 4]  // fondo, balda1, balda2, balda3, balda4
               <Edges color="#aaccff" threshold={15} lineWidth={0.8} />
             </Box>
             
-            {/* Renderizar recursos de la balda con apilamiento */}
+            {/* Renderizar recursos y consumibles dentro del perímetro de la balda */}
             {recursosBalda.map((recurso, ridx) => {
-              // Calcular cuántos objetos del mismo tipo hay antes
-              const mismoTipo = recursosBalda.filter(r => r.tipo === recurso.tipo)
-              const apilado = mismoTipo.findIndex(r => r.id === recurso.id)
-              
-              return (
+              const mismoTipo = recursosBalda.filter((r) => r.tipo === recurso.tipo)
+              const apilado = mismoTipo.findIndex((r) => r.id === recurso.id)
+              const layoutPos = positions[ridx] || { x: 0, z: 0 }
+              const size = getRecursoSize(recurso)
+              const itemPosition = {
+                x: layoutPos.x,
+                y: balda.y + baldaThickness / 2 + size.height / 2 + 0.005,
+                z: layoutPos.z,
+              }
+              const tipo = recurso.tipo?.toLowerCase() || ''
+              const esHerramienta = tipo.includes('herramienta') || tipo.includes('caja')
+
+              return esHerramienta ? (
+                <CajaHerramientas3D
+                  key={`recurso-${recurso.id || ridx}`}
+                  id={recurso.id || ridx}
+                  position={itemPosition}
+                  isSelected={false}
+                  onClick={(_, event) => onRecursoClick?.(recurso, armario.num, idx, event)}
+                />
+              ) : (
                 <Recurso3D
                   key={`recurso-${recurso.id || ridx}`}
                   recurso={recurso}
-                  position={{ x: 0, y: balda.y + 0.06, z: recursoZ }}
-                  index={ridx}
+                  position={itemPosition}
                   apilado={apilado}
-                  onClick={(r, e) => onRecursoClick?.(r, armario.num, idx, e)}
+                  onClick={(event) => onRecursoClick?.(recurso, armario.num, idx, event)}
                 />
               )
             })}
-            
-            {consumiblesBalda.map((consumible, cidx) => (
-              <Consumible3D
-                key={`consumible-${consumible.id || cidx}`}
-                consumible={consumible}
-                position={{ x: 0, y: balda.y + 0.04, z: recursoZ }}
-                index={cidx}
-                onClick={(c, e) => onConsumibleClick?.(c, armario.num, idx, e)}
-              />
-            ))}
+
+            {consumiblesBalda.map((consumible, cidx) => {
+              const layoutPos = positions[recursosBalda.length + cidx] || { x: 0, z: 0 }
+              const size = getConsumibleSize()
+              const itemPosition = {
+                x: layoutPos.x,
+                y: balda.y + baldaThickness / 2 + size.height / 2 + 0.005,
+                z: layoutPos.z,
+              }
+
+              return (
+                <Consumible3D
+                  key={`consumible-${consumible.id || cidx}`}
+                  consumible={consumible}
+                  position={itemPosition}
+                  onClick={(c, e) => onConsumibleClick?.(c, armario.num, idx, e)}
+                />
+              )
+            })}
           </React.Fragment>
         )
       })}      

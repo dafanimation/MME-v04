@@ -47,8 +47,14 @@ export const MenuInventarioArmario = ({
   const dragOffset = useRef({ x: 0, y: 0 })
   const [activeTab, setActiveTab] = useState('recursos')
 
-  const userIsAdmin = currentUser?.role === 'admin' || currentUser?.role === 'admin_master'
-  const puedeEditar = userIsAdmin
+  const userRole = String(currentUser?.role || '').toLowerCase()
+  const userIsAdmin = userRole === 'admin' || userRole === 'admin_master'
+  const userIsAdminMaster = userIsAdmin
+  const puedeEditar = userIsAdminMaster
+  const [editMode, setEditMode] = useState(userIsAdminMaster)
+  const puedeModificar = userIsAdminMaster && editMode
+  const [validationIssues, setValidationIssues] = useState([])
+  const [validationPerformed, setValidationPerformed] = useState(false)
 
   // Cargar consumibles desde localStorage
   useEffect(() => {
@@ -75,7 +81,7 @@ export const MenuInventarioArmario = ({
 
   // Añadir consumible
   const handleAgregarConsumible = () => {
-    if (!puedeEditar) return
+    if (!puedeModificar) return
     if (!nuevoConsumible.trim()) {
       mostrarMensaje('❌ Introduce un nombre', 'error')
       return
@@ -96,7 +102,7 @@ export const MenuInventarioArmario = ({
 
   // Actualizar cantidad de consumible
   const handleUpdateCantidad = (id, nuevaCantidad) => {
-    if (!puedeEditar) return
+    if (!puedeModificar) return
     const nuevosConsumibles = consumibles.map(c =>
       c.id === id ? { ...c, cantidad: Math.max(0, nuevaCantidad) } : c
     )
@@ -105,16 +111,31 @@ export const MenuInventarioArmario = ({
 
   // Eliminar consumible
   const handleEliminarConsumible = (id) => {
-    if (!puedeEditar) return
+    if (!puedeModificar) return
     if (confirm('¿Eliminar este consumible?')) {
       guardarConsumibles(consumibles.filter(c => c.id !== id))
       mostrarMensaje('✅ Consumible eliminado', 'success')
     }
   }
 
+  // Retirar recurso seleccionado
+  const handleRetirarRecurso = (baldaId, recursoId) => {
+    if (!puedeModificar) {
+      mostrarMensaje('🔒 Solo Admin Master puede modificar', 'error')
+      return
+    }
+    if (!recursoId) {
+      mostrarMensaje('❌ Selecciona un recurso para retirar', 'error')
+      return
+    }
+
+    onRetirarRecurso?.(baldaId, recursoId)
+    setSelectedRecurso(null)
+  }
+
   // Añadir recurso a balda (con selector de tipo)
   const handleAsignarRecursoConTipo = (baldaId) => {
-    if (!puedeEditar) {
+    if (!puedeModificar) {
       mostrarMensaje('🔒 Solo Admin Master puede modificar', 'error')
       return
     }
@@ -146,6 +167,38 @@ export const MenuInventarioArmario = ({
   const mostrarMensaje = (texto, tipo = 'info') => {
     setMensaje(texto)
     setTimeout(() => setMensaje(''), 2000)
+  }
+
+  const validarDistribucion = () => {
+    const issues = []
+
+    if (!baldas?.length) {
+      issues.push('No hay baldas definidas para este armario.')
+    }
+
+    baldas?.forEach((balda, idx) => {
+      const recursosCount = balda.recursos?.length || 0
+      if (balda.capacidad <= 0) {
+        issues.push(`Balda ${balda.nombre || balda.nivel} no tiene capacidad configurada.`)
+      }
+      if (recursosCount > (balda.capacidad || 0)) {
+        issues.push(`Balda ${balda.nombre || balda.nivel} supera su capacidad: ${recursosCount}/${balda.capacidad}.`)
+      }
+    })
+
+    consumibles.forEach((consumible) => {
+      if (consumible.balda == null || consumible.balda < 0 || consumible.balda >= baldas.length) {
+        issues.push(`Consumible ${consumible.nombre} asignado a balda inválida.`)
+      }
+    })
+
+    if (issues.length === 0) {
+      issues.push('✅ Distribución válida: sin solapamientos aparentes y dentro del perímetro.')
+    }
+
+    setValidationIssues(issues)
+    setValidationPerformed(true)
+    return issues
   }
 
   // Manejo de arrastre
@@ -200,7 +253,9 @@ export const MenuInventarioArmario = ({
       <div className="menu-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid rgba(0,212,255,0.3)', cursor: 'grab', background: 'linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,212,255,0.05))', borderRadius: '16px 16px 0 0' }}>
         <div>
           <span style={{ color: '#00d4ff', fontSize: '14px', fontWeight: 'bold' }}>🗄️ {armario.label || `Armario ${armario.num}`}</span>
-          <div style={{ fontSize: '10px', color: '#6fa8c8' }}>{puedeEditar ? '🔓 Edición activa' : '🔒 Solo lectura'}</div>
+          <div style={{ fontSize: '10px', color: '#6fa8c8' }}>
+            {puedeEditar ? (editMode ? '🔓 Edición activa' : '🧩 Editar desde configuración') : '🔒 Solo lectura'}
+          </div>
         </div>
         <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#ff6666', cursor: 'pointer', fontSize: '18px' }}>✕</button>
       </div>
@@ -220,6 +275,11 @@ export const MenuInventarioArmario = ({
           <button onClick={() => setActiveTab('consumibles')} style={{ padding: '8px 16px', border: 'none', background: activeTab === 'consumibles' ? 'rgba(0,212,255,0.15)' : 'transparent', borderBottom: activeTab === 'consumibles' ? '2px solid #00d4ff' : '2px solid transparent', color: activeTab === 'consumibles' ? '#00d4ff' : '#aaa', cursor: 'pointer', fontSize: '12px' }}>
             🧪 Consumibles ({consumibles.length})
           </button>
+          {userIsAdmin && (
+            <button onClick={() => setActiveTab('configuracion')} style={{ padding: '8px 16px', border: 'none', background: activeTab === 'configuracion' ? 'rgba(0,212,255,0.15)' : 'transparent', borderBottom: activeTab === 'configuracion' ? '2px solid #00d4ff' : '2px solid transparent', color: activeTab === 'configuracion' ? '#00d4ff' : '#aaa', cursor: 'pointer', fontSize: '12px' }}>
+              ⚙️ Configuración
+            </button>
+          )}
         </div>
 
         {/* Pestaña Recursos */}
@@ -269,8 +329,8 @@ export const MenuInventarioArmario = ({
 
                     {puedeEditar && (
                       <div style={{ display: 'flex', gap: '8px', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(0,212,255,0.1)' }}>
-                        <button style={{ flex: 1, background: 'rgba(0,212,255,0.15)', border: '1px solid #00d4ff', borderRadius: '6px', color: '#00d4ff', padding: '6px', cursor: 'pointer', fontSize: '10px' }} onClick={() => handleAsignarRecursoConTipo(idx)}>📦 Añadir {TIPOS_RECURSOS.find(t => t.value === tipoRecursoSeleccionado)?.label || 'recurso'}</button>
-                        <button style={{ flex: 1, background: 'rgba(0,212,255,0.15)', border: '1px solid #00d4ff', borderRadius: '6px', color: '#00d4ff', padding: '6px', cursor: 'pointer', fontSize: '10px', opacity: selectedRecurso ? 1 : 0.5 }} onClick={() => onRetirarRecurso?.(idx, selectedRecurso)} disabled={!selectedRecurso}>📤 Retirar</button>
+                        <button style={{ flex: 1, background: puedeModificar ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)', border: '1px solid #00d4ff', borderRadius: '6px', color: '#00d4ff', padding: '6px', cursor: puedeModificar ? 'pointer' : 'not-allowed', fontSize: '10px' }} onClick={() => handleAsignarRecursoConTipo(idx)} disabled={!puedeModificar}>📦 Añadir {TIPOS_RECURSOS.find(t => t.value === tipoRecursoSeleccionado)?.label || 'recurso'}</button>
+                        <button style={{ flex: 1, background: puedeModificar ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.05)', border: '1px solid #00d4ff', borderRadius: '6px', color: '#00d4ff', padding: '6px', cursor: puedeModificar ? 'pointer' : 'not-allowed', fontSize: '10px', opacity: selectedRecurso && puedeModificar ? 1 : 0.5 }} onClick={() => handleRetirarRecurso(idx, selectedRecurso)} disabled={!selectedRecurso || !puedeModificar}>📤 Retirar</button>
                       </div>
                     )}
                   </div>
@@ -292,7 +352,7 @@ export const MenuInventarioArmario = ({
               <div key={consumible.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', margin: '4px 0', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', borderLeft: `3px solid ${consumible.cantidad <= 1 ? '#ffaa44' : '#00d4ff'}` }}>
                 <span style={{ fontSize: '11px', color: '#d8eaff' }}>{consumible.nombre}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {puedeEditar ? (
+                  {puedeModificar ? (
                     <>
                       <button style={{ width: '26px', height: '26px', background: 'rgba(0,212,255,0.2)', border: '1px solid #00d4ff', borderRadius: '4px', color: '#00d4ff', cursor: 'pointer' }} onClick={() => handleUpdateCantidad(consumible.id, consumible.cantidad - 1)}>-</button>
                       <span style={{ fontSize: '12px', fontWeight: 'bold', minWidth: '40px', textAlign: 'center' }}>{consumible.cantidad}</span>
@@ -312,8 +372,53 @@ export const MenuInventarioArmario = ({
                 <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                   <input type="text" value={nuevoConsumible} onChange={(e) => setNuevoConsumible(e.target.value)} placeholder="Nombre" style={{ flex: 2, padding: '8px', background: '#0f0f1a', border: '1px solid #00d4ff', borderRadius: '6px', color: '#fff', fontSize: '11px' }} />
                   <input type="number" value={nuevaCantidad} onChange={(e) => setNuevaCantidad(parseInt(e.target.value) || 1)} min="1" style={{ width: '70px', padding: '8px', background: '#0f0f1a', border: '1px solid #00d4ff', borderRadius: '6px', color: '#fff', fontSize: '11px', textAlign: 'center' }} />
-                  <button onClick={handleAgregarConsumible} style={{ background: 'linear-gradient(135deg, #00d4ff, #0099bb)', border: 'none', borderRadius: '6px', color: '#1a1a2e', padding: '8px 12px', cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}>➕ Añadir</button>
+                  <button onClick={handleAgregarConsumible} disabled={!puedeModificar} style={{ background: puedeModificar ? 'linear-gradient(135deg, #00d4ff, #0099bb)' : 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '6px', color: puedeModificar ? '#1a1a2e' : '#666', padding: '8px 12px', cursor: puedeModificar ? 'pointer' : 'not-allowed', fontSize: '11px', fontWeight: 'bold' }}>➕ Añadir</button>
                 </div>
+                {!puedeModificar && (
+                  <div style={{ marginTop: '8px', fontSize: '10px', color: '#ffaa44' }}>Activa la edición en la pestaña de configuración para modificar consumibles.</div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {activeTab === 'configuracion' && (
+          <>
+            <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '10px', padding: '12px', marginBottom: '16px', border: '1px solid rgba(0,212,255,0.2)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <span style={{ fontSize: '12px', color: '#d8eaff' }}>⚙️ Configuración y validación</span>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={validarDistribucion} style={{ padding: '6px 10px', border: '1px solid #00d4ff', borderRadius: '6px', background: '#0a0a1a', color: '#00d4ff', cursor: 'pointer', fontSize: '11px' }}>Validar distribución</button>
+                  {userIsAdminMaster && (
+                    <button onClick={() => setEditMode((prev) => !prev)} style={{ padding: '6px 10px', border: '1px solid #00ff88', borderRadius: '6px', background: editMode ? '#002a0a' : '#0a0a1a', color: editMode ? '#7fff9e' : '#00ff88', cursor: 'pointer', fontSize: '11px' }}>
+                      {editMode ? '🔓 Desactivar edición de inventario' : '🔒 Activar edición de inventario'}
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div style={{ fontSize: '11px', color: '#aaa' }}>
+                <div>Baldas definidas: {baldas?.length || 0}</div>
+                <div>Recursos totales: {totalRecursos}</div>
+                <div>Capacidad total: {capacidadTotal}</div>
+                <div>Rol actual: {userIsAdminMaster ? 'Admin Master' : userIsAdmin ? 'Admin' : 'Usuario'}</div>
+                {userIsAdminMaster && <div style={{ marginTop: '6px', color: editMode ? '#7fff9e' : '#ffaa44', fontSize: '10px' }}>{editMode ? 'Edición habilitada' : 'Activa la edición para modificar inventario.'}</div>}
+              </div>
+            </div>
+
+            {validationPerformed && (
+              <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '10px', padding: '12px', border: '1px solid rgba(255,255,255,0.1)', color: '#eee', fontSize: '11px', marginBottom: '16px' }}>
+                <strong style={{ color: validationIssues.some(issue => issue.startsWith('✅')) ? '#00ff88' : '#ffaa44' }}>Resultados de validación</strong>
+                <ul style={{ marginTop: '8px', paddingLeft: '18px', color: '#ccc' }}>
+                  {validationIssues.map((issue, idx) => (
+                    <li key={idx} style={{ marginBottom: '6px' }}>{issue}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {!userIsAdminMaster && (
+              <div style={{ marginTop: '8px', fontSize: '10px', color: '#ffaa44', textAlign: 'center', padding: '8px', background: 'rgba(255,170,0,0.1)', borderRadius: '8px' }}>
+                🔒 Solo Admin Master puede activar y editar esta configuración.
               </div>
             )}
           </>

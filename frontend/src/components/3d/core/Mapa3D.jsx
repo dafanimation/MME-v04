@@ -394,7 +394,7 @@ export const Mapa3D = ({
       )}
       
       {/* ESCENA 3D */}
-      <Canvas camera={{ position: [6, 5, 6], fov: 45 }}>
+      <Canvas camera={{ position: [3, 2, 3], fov: 45 }} style={{ width: '100%', height: '100%' }}>
         <ambientLight intensity={0.6} />
         <pointLight position={[5, 8, 5]} intensity={0.8} />
         <directionalLight position={[3, 5, 2]} intensity={0.5} />
@@ -500,7 +500,16 @@ export const Mapa3D = ({
           />
         ))}
         
-        <OrbitControls enableZoom enablePan enableRotate target={[0, 0.8, 0]} maxPolarAngle={Math.PI / 2.2} />
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          enableRotate={true}
+          enableDamping
+          dampingFactor={0.08}
+          autoRotate={false}
+          target={[0, 0.8, 0]}
+          maxPolarAngle={Math.PI / 2.2}
+        />
       </Canvas>
     </div>
   );

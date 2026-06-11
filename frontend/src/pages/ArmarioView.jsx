@@ -473,12 +473,16 @@ const ArmarioView = () => {
             />
           )}
           
-          <OrbitControls 
-            enableZoom 
-            enablePan 
-            enableRotate 
+          <OrbitControls
+            enableZoom
+            enablePan
+            enableRotate
+            enableDamping
+            dampingFactor={0.08}
+            autoRotate={false}
             target={[0, 0.8, 0]}
             maxPolarAngle={Math.PI / 2.2}
+            makeDefault
           />
         </Canvas>
       </div>

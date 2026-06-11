@@ -27,7 +27,7 @@ export const login = async (email, password) => {
   if (res.ok && data.token) {
     localStorage.setItem(TOKEN_KEY, data.token)
     localStorage.setItem(USER_KEY, JSON.stringify(data.user))
-    return { success: true, isAdmin: data.user?.role === 'admin' }
+    return { success: true, isAdmin: data.user?.role === 'admin' || data.user?.role === 'admin_master' }
   }
   return { success: false, message: data.message || "Error d'autenticació" }
 }

@@ -159,6 +159,7 @@ const MenuAdmin = () => {
         { path: '/armario/5', icon: '🗄️', label: 'Armario S2' },
         { path: '/armario/6', icon: '🗄️', label: 'Armario S3' },
         { path: '/armario/7', icon: '🔋', label: 'Armario Portátiles (carga)' },
+        { path: '/elemento', icon: '🧩', label: 'Editor de elementos' },
       ],
     },
     {
