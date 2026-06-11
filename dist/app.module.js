@@ -34,6 +34,7 @@ const ud_activity_model_1 = require("./ud-activities/ud-activity.model");
 const user_activity_progress_model_1 = require("./ud-activities/user-activity-progress.model");
 const storage_location_model_1 = require("./storage-locations/storage-location.model");
 const whitelist_model_1 = require("./admin/whitelist.model");
+const upload_module_1 = require("./upload/upload.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -71,6 +72,7 @@ exports.AppModule = AppModule = __decorate([
             ud_activities_module_1.UdActivitiesModule,
             storage_locations_module_1.StorageLocationsModule,
             notifications_module_1.NotificationsModule,
+            upload_module_1.UploadModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

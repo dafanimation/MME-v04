@@ -393,12 +393,19 @@ export const Mapa3D = ({
         />
       )}
       
-      {/* ESCENA 3D */}
+{/* ESCENA 3D */}
       <Canvas camera={{ position: [3, 2, 3], fov: 45 }} style={{ width: '100%', height: '100%' }}>
         <ambientLight intensity={0.6} />
         <pointLight position={[5, 8, 5]} intensity={0.8} />
         <directionalLight position={[3, 5, 2]} intensity={0.5} />
         
+        {/* COMENTA o ELIMINA este mesh - está tapando el grid */}
+        {/* <mesh position={[0, -0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[6.4, 6.4]} />
+          <meshStandardMaterial color="#bbbbbb" />
+        </mesh> */}
+        
+        {/* SOLO el GridSuelo, sin fondo sólido */}
         <GridSuelo />
         
         <Mesa3D 

@@ -1,0 +1,32 @@
+/* src/styles/ElementoView.css */
+.elemento-view {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #050510;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Scrollbar personalizada para el sidebar */
+.elemento-view aside::-webkit-scrollbar {
+  width: 4px;
+}
+
+.elemento-view aside::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.elemento-view aside::-webkit-scrollbar-thumb {
+  background: #00d4ff;
+  border-radius: 4px;
+}
+
+/* Animación de hover para botones */
+.entity-button {
+  transition: all 0.2s ease;
+}
+
+.entity-button:hover {
+  transform: translateX(4px);
+  border-color: #00d4ff !important;
+}

@@ -24,10 +24,12 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, Text } from '@react-three/drei'
+import { GridSuelo } from '../components/3d/core/GridSuelo'
 import { getUser, isAdmin } from '../services/auth'
 import MenuAdmin from '../components/menus/MenuAdmin'
 import { Armario3D } from '../components/3d/entities/Armario3D'
+import { ARMARIO } from '../components/3d/core/config'
 import { ArmarioPortatiles3D } from '../components/3d/entities/ArmarioPortatiles3D'
 import { MenuInventarioArmario } from '../components/menus/MenuInventarioArmario'
 import '../styles/Dashboard.css'
@@ -111,6 +113,10 @@ const ArmarioView = () => {
   const [mensaje, setMensaje] = useState('')
   const [recursosDisponibles, setRecursosDisponibles] = useState([])
   const [consumibles, setConsumibles] = useState([])
+  
+  const GRID_SIZE = 6
+  const GRID_SCALE_LABEL = `Grid: ${GRID_SIZE} x ${GRID_SIZE} unidades (1 unidad = 10 cm)`
+  const ARMARIO_MEASURE_LABEL = `Armario: ${ARMARIO.width.toFixed(1)} x ${ARMARIO.height.toFixed(1)} x ${ARMARIO.depth.toFixed(1)} unidades (≈ ${Math.round(ARMARIO.width * 10)} x ${Math.round(ARMARIO.height * 10)} x ${Math.round(ARMARIO.depth * 10)} cm)`
   
   // Configuración dinámica del armario
   const [capacidadPorNivel, setCapacidadPorNivel] = useState([8, 8, 8, 8])
@@ -400,6 +406,12 @@ const ArmarioView = () => {
           <div style={{ fontSize: '12px', color: '#aaa' }}>
             📦 Capacidad total: {capacidadPorNivel.reduce((a,b) => a + b, 0)} elementos
           </div>
+          <div style={{ fontSize: '11px', color: '#99d4ff', marginTop: '4px' }}>
+            {GRID_SCALE_LABEL}
+          </div>
+          <div style={{ fontSize: '11px', color: '#ffcc55', marginTop: '2px' }}>
+            {ARMARIO_MEASURE_LABEL}
+          </div>
           <div style={{ fontSize: '11px', color: userIsAdmin ? '#00ff88' : '#ffaa44', marginTop: '5px' }}>
             {userIsAdmin ? '✅ Permisos completos' : '👁️ Solo visualización'}
           </div>
@@ -438,8 +450,13 @@ const ArmarioView = () => {
           <pointLight position={[5, 8, 5]} intensity={0.8} />
           <directionalLight position={[3, 5, 2]} intensity={0.5} />
           
-          {/* Suelo de referencia */}
-          <gridHelper args={[6, 20, '#2a3a5a', '#1a2a3a']} position={[0, -0.9, 0]} />
+          <GridSuelo />
+          <Text position={[0, -0.88, -2.2]} fontSize={0.08} color="#7fd7ff" anchorX="center">
+            {GRID_SCALE_LABEL}
+          </Text>
+          <Text position={[0, -0.88, 2.2]} fontSize={0.08} color="#ffcc55" anchorX="center">
+            {ARMARIO_MEASURE_LABEL}
+          </Text>
           
           {armario?.tipo === 'portatiles' ? (
             <ArmarioPortatiles3D

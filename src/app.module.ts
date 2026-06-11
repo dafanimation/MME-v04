@@ -25,6 +25,8 @@ import { UdActivity } from './ud-activities/ud-activity.model';
 import { UserActivityProgress } from './ud-activities/user-activity-progress.model';
 import { StorageLocation } from './storage-locations/storage-location.model';
 import { WhitelistEntry } from './admin/whitelist.model';
+import { UploadModule } from './upload/upload.module';
+
 
 @Module({
   imports: [
@@ -59,6 +61,7 @@ import { WhitelistEntry } from './admin/whitelist.model';
     UdActivitiesModule,
     StorageLocationsModule,
     NotificationsModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,10 +2,13 @@
 // ARCHIVO: src/components/3d/core/config.js
 // DESCRIPCIÓN: Configuración global del sistema 3D
 // AUTOR: Sistema MME
-// VERSIÓN: 3.0
-// FECHA: 2026-06-04
+// VERSIÓN: 4.0
+// FECHA: 2026-06-08
 // ============================================================
 // 
+// ESCALA BASE: 1 unidad = 40cm (celda de baldosa)
+// Referencia: AulaTaller3D con baldosas de 40x40cm
+//
 // CONTENIDO:
 // 1. ESCALA Y ALTURAS - Constantes base para posicionamiento
 // 2. ELEMENTOS PRINCIPALES - Mesa, PC, Usuario
@@ -21,40 +24,47 @@
 // ============================================================
 
 // ============================================
-// 1. ESCALA BASE
+// 1. ESCALA BASE (1 unidad = 40cm)
 // ============================================
-export const TILE_SIZE = 0.5
-export const TILE_HALF = TILE_SIZE / 2
+export const TILE_SIZE = 0.4           // 40cm por celda
+export const TILE_HALF = TILE_SIZE / 2 // 0.2
+
+// Función de conversión (mantener compatibilidad)
+export const cmToUnits = (cm) => cm / 40
+export const unitsToCm = (units) => units * 40
 
 // ============================================
 // 2. ALTURAS (relativas al suelo, Y = 0)
+// Valores reales en cm convertidos a unidades
 // ============================================
 export const GROUND_Y = -0.05
-export const MESA_HEIGHT = 1.0
-export const PC_HEIGHT = 0.1
-export const USER_HEIGHT = 0.25
-export const ESTANTERIA_HEIGHT = 1.2
-export const ARMARIO_HEIGHT = 1.8
-export const PANTALLA_HEIGHT = 0.2
-export const HDD_HEIGHT = 0.05
-export const PORTATIL_HEIGHT = 0.1
-export const IMPRESORA_HEIGHT = 0.2
+
+// Alturas reales: mesa 75cm, persona sentada 120cm, etc.
+export const MESA_HEIGHT = 2            // 75cm reales
+export const PC_HEIGHT = 0.2            // 8cm reales (PC delgado tipo NUC)
+export const USER_HEIGHT = 0.3          // 12cm (representación esfera)
+export const ESTANTERIA_HEIGHT = 4.5    // 180cm reales
+export const ARMARIO_HEIGHT = 5.0       // 200cm reales
+export const PANTALLA_HEIGHT = 0.875    // 35cm reales
+export const HDD_HEIGHT = 0.1           // 4cm reales
+export const PORTATIL_HEIGHT = 0.1      // 4cm reales
+export const IMPRESORA_HEIGHT = 0.5     // 20cm reales
 
 // Posiciones Y (centro geométrico)
-export const MESA_Y = MESA_HEIGHT / 2
-export const PC_Y = MESA_HEIGHT + PC_HEIGHT / 2
-export const USER_Y = MESA_HEIGHT + USER_HEIGHT
-export const PANTALLA_Y = PC_Y + PC_HEIGHT / 2 + PANTALLA_HEIGHT / 2
+export const MESA_Y = MESA_HEIGHT / 2                                    // 0.9375
+export const PC_Y = MESA_HEIGHT + PC_HEIGHT / 2                          // 1.975
+export const USER_Y = MESA_HEIGHT + USER_HEIGHT                          // 2.175
+export const PANTALLA_Y = PC_Y + PC_HEIGHT / 2 + PANTALLA_HEIGHT / 2    // 2.5125
 
 // ============================================
-// 3. MESA PRINCIPAL
+// 3. MESA PRINCIPAL (120cm x 80cm = 3 x 2 celdas)
 // ============================================
 export const MESA = {
   id: 'mesa_principal',
   nombre: 'Mesa de Trabajo Principal',
-  width: 3 * TILE_SIZE,
-  depth: 2 * TILE_SIZE,
-  height: MESA_HEIGHT,
+  width: 6 * TILE_SIZE,      // 1.2 unidades = 120cm
+  depth: 4 * TILE_SIZE,      // 0.8 unidades = 80cm
+  height: MESA_HEIGHT,       // 1.875 unidades = 75cm
   x: 0,
   z: 0,
   maxPcs: 6,
@@ -69,14 +79,14 @@ export const MESA = {
 }
 
 // ============================================
-// 4. PC (sobre mesa)
+// 4. PC (sobre mesa) - Tamaño realista
 // ============================================
 export const PC = {
   tipo: 'pc',
   nombre: 'Ordenador Personal',
-  width: 0.4,
-  depth: 0.3,
-  height: PC_HEIGHT,
+  width: 0.4,                // 16cm
+  depth: 0.3,                // 12cm
+  height: PC_HEIGHT,         // 8cm
   maxPorMesa: 6,
   positions: [
     { x: -0.45, z: -0.30, label: 'Posición 1', index: 0 },
@@ -100,24 +110,25 @@ export const PC = {
 
 // ============================================
 // 5. USUARIO (alrededor de la mesa)
+// Distancias: ~80cm de la mesa (2 unidades)
 // ============================================
 export const USUARIO = {
   tipo: 'usuario',
   nombre: 'Usuario',
-  radius: 0.18,
+  radius: 0.2,               // 8cm radio de la esfera
   positions: [
-    // Lado Norte
+    // Lado Norte (detrás de la mesa, Z negativo)
     { x: -0.8, z: -1.6, label: 'N1', lado: 'norte', index: 0 },
     { x: 0,    z: -1.6, label: 'N2', lado: 'norte', index: 1 },
     { x: 0.8,  z: -1.6, label: 'N3', lado: 'norte', index: 2 },
-    // Lado Sur
+    // Lado Sur (delante de la mesa)
     { x: -0.8, z: 1.6,  label: 'S1', lado: 'sur',   index: 3 },
     { x: 0,    z: 1.6,  label: 'S2', lado: 'sur',   index: 4 },
     { x: 0.8,  z: 1.6,  label: 'S3', lado: 'sur',   index: 5 },
-    // Lado Este
+    // Lado Este (derecha)
     { x: 1.6,  z: -0.6, label: 'E1', lado: 'este',  index: 6 },
     { x: 1.6,  z: 0.6,  label: 'E2', lado: 'este',  index: 7 },
-    // Lado Oeste
+    // Lado Oeste (izquierda)
     { x: -1.6, z: -0.6, label: 'W1', lado: 'oeste', index: 8 },
     { x: -1.6, z: 0.6,  label: 'W2', lado: 'oeste', index: 9 },
     // Esquinas
@@ -135,9 +146,9 @@ export const USUARIO = {
 export const ESTANTERIA = {
   tipo: 'estanteria',
   nombre: 'Estantería',
-  width: 0.8,
-  depth: 0.6,
-  height: ESTANTERIA_HEIGHT,
+  width: 0.8,                // 32cm
+  depth: 0.6,                // 24cm
+  height: ESTANTERIA_HEIGHT, // 180cm
   capacidad: {
     pcs: 4,
     portatiles: 2,
@@ -158,9 +169,9 @@ export const ESTANTERIA = {
 export const ARMARIO = {
   tipo: 'armario',
   nombre: 'Armario de Almacenaje',
-  width: 1.2,
-  depth: 0.8,
-  height: ARMARIO_HEIGHT,
+  width: 2,                // 80cm
+  depth: 1,                // 40cm
+  height: ARMARIO_HEIGHT,    // 200cm
   capacidad: {
     pcs: 6,
     portatiles: 4,
@@ -183,9 +194,9 @@ export const ARMARIO = {
 export const PANTALLA = {
   tipo: 'pantalla',
   nombre: 'Pantalla',
-  width: 0.22,
-  depth: 0.02,
-  height: PANTALLA_HEIGHT,
+  width: 0.75,                // 30cm
+  depth: 0.05,               // 2cm
+  height: PANTALLA_HEIGHT,   // 35cm
   yOffset: 0.15,
   maxPorPC: 2,
   colors: {
@@ -206,9 +217,9 @@ export const PANTALLA = {
 export const HDD = {
   tipo: 'hdd',
   nombre: 'Disco Duro',
-  width: 0.1,
-  depth: 0.08,
-  height: HDD_HEIGHT,
+  width: 0.12,               // 4.8cm
+  depth: 0.1,                // 4cm
+  height: HDD_HEIGHT,        // 4cm
   posicionRelativa: { x: 1, z: 0, y: -0.01 },
   capacidadGB: [256, 512, 1024, 2048],
   maxPorPC: 2,
@@ -229,9 +240,9 @@ export const HDD = {
 export const PORTATIL = {
   tipo: 'portatil',
   nombre: 'Portátil',
-  width: 0.35,
-  depth: 0.35,
-  height: PORTATIL_HEIGHT,
+  width: 0.4,                // 16cm
+  depth: 0.4,                // 16cm
+  height: PORTATIL_HEIGHT,   // 4cm
   maxPorMesa: 4,
   maxPorArmario: 6,
   colors: {
@@ -250,9 +261,9 @@ export const PORTATIL = {
 export const IMPRESORA = {
   tipo: 'impresora',
   nombre: 'Impresora',
-  width: 0.45,
-  depth: 0.45,
-  height: IMPRESORA_HEIGHT,
+  width: 0.5,                // 20cm
+  depth: 0.5,                // 20cm
+  height: IMPRESORA_HEIGHT,  // 20cm
   maxPorMesa: 2,
   maxPorArmario: 2,
   colors: {
@@ -271,7 +282,7 @@ export const IMPRESORA = {
 export const ACTIVIDAD = {
   tipo: 'actividad',
   nombre: 'Actividad UD',
-  size: 0.25,
+  size: 0.3,                 // 12cm
   colorFill: '#ffaa44',
   colorEdge: '#ffcc66',
   opacity: 0.7,
@@ -283,8 +294,8 @@ export const ACTIVIDAD = {
 export const PROYECTO = {
   tipo: 'proyecto',
   nombre: 'Proyecto',
-  radius: 0.35,
-  height: 0.5,
+  radius: 0.35,              // 14cm radio
+  height: 0.6,               // 24cm alto
   colorFill: '#00d4ff',
   colorEdge: '#88ddff',
   opacity: 0.7,
@@ -300,7 +311,7 @@ export const PC_POSITIONS = PC.positions
 // Posiciones de Usuarios (alias para conveniencia)
 export const USER_POSITIONS = USUARIO.positions
 
-// Posiciones de Estanterías
+// Posiciones de Estanterías (en unidades, 1u = 40cm)
 export const ESTANTERIA_POSITIONS = [
   { x: -2.2, z: -2.0, label: 'Estantería NO', zona: 'noroeste' },
   { x: 2.2,  z: -2.0, label: 'Estantería NE', zona: 'noreste' },
@@ -394,6 +405,7 @@ export const COLORES_ESTADO = {
 // ============================================
 export const COLORS = {
   gridLine: '#2a3a5a',
+  gridDivision: '#4a6a8a',
   background: '#050510',
   hover: '#ffffff',
   selected: '#ffaa44',
@@ -403,11 +415,11 @@ export const COLORS = {
 }
 
 // ============================================
-// 17. GRID
+// 17. GRID (expandido para mejor visualización)
 // ============================================
 export const GRID = {
-  width: 7,
-  depth: 6,
+  width: 15,    // 15 celdas = 600cm = 6m
+  depth: 12,    // 12 celdas = 480cm = 4.8m
 }
 
 // Límites automáticos
@@ -457,6 +469,37 @@ export const getColorByStatus = (elementConfig, status) => {
 }
 
 // ============================================
+// CONFIGURACIÓN AVANZADA DE ARMARIOS
+// ============================================
+
+export const ARMARIO_CONFIG = {
+  // Niveles de almacenaje (6 niveles total)
+  niveles: {
+    superior: { nombre: 'Superficie superior', y: 2.375, altura: 0.15, capacidad: 4 },
+    balda4: { nombre: 'Balda 4 (superior)', y: 1.625, altura: 0.12, capacidad: 6 },
+    balda3: { nombre: 'Balda 3', y: 0.875, altura: 0.12, capacidad: 6 },
+    balda2: { nombre: 'Balda 2', y: 0.125, altura: 0.12, capacidad: 6 },
+    balda1: { nombre: 'Balda 1', y: -0.625, altura: 0.12, capacidad: 6 },
+    inferior: { nombre: 'Fondo inferior', y: -1.375, altura: 0.15, capacidad: 4 },
+  },
+  
+  // Capacidad máxima por defecto
+  capacidadPorDefecto: {
+    cajasHerramientas: 10,
+    pcs: 6,
+    portatiles: 8,
+    pantallas: 4,
+    otros: 12,
+  },
+  
+  // Altura de apilamiento vertical (8cm = 0.2 unidades)
+  apilamientoVertical: {
+    alturaPorUnidad: 0.2,   // 8cm por objeto apilado
+    maxPorColumna: 4,       // Máximo 4 objetos apilados
+  },
+}
+
+// ============================================
 // EXPORT DEFAULT (para compatibilidad)
 // ============================================
 const config = {
@@ -466,6 +509,9 @@ const config = {
   ESTANTERIA_HEIGHT, ARMARIO_HEIGHT,
   PANTALLA_HEIGHT, HDD_HEIGHT, PORTATIL_HEIGHT, IMPRESORA_HEIGHT,
   MESA_Y, PC_Y, USER_Y, PANTALLA_Y,
+  
+  // Utilidades de conversión
+  cmToUnits, unitsToCm,
   
   // Elementos
   MESA, PC, USUARIO, ESTANTERIA, ARMARIO,
@@ -486,37 +532,9 @@ const config = {
   
   // Utilidades
   getPositionByIndex, isValidType, getColorByStatus,
-}
-// Añadir al final de config.js
-
-// ============================================
-// CONFIGURACIÓN AVANZADA DE ARMARIOS
-// ============================================
-
-export const ARMARIO_CONFIG = {
-  // Niveles de almacenaje (6 niveles total)
-  niveles: {
-    superior: { nombre: 'Superficie superior', y: 0.95, altura: 0.15, capacidad: 4 },
-    balda4: { nombre: 'Balda 4 (superior)', y: 0.65, altura: 0.12, capacidad: 6 },
-    balda3: { nombre: 'Balda 3', y: 0.35, altura: 0.12, capacidad: 6 },
-    balda2: { nombre: 'Balda 2', y: 0.05, altura: 0.12, capacidad: 6 },
-    balda1: { nombre: 'Balda 1', y: -0.25, altura: 0.12, capacidad: 6 },
-    inferior: { nombre: 'Fondo inferior', y: -0.55, altura: 0.15, capacidad: 4 },
-  },
   
-  // Capacidad máxima por defecto
-  capacidadPorDefecto: {
-    cajasHerramientas: 10,
-    pcs: 6,
-    portatiles: 8,
-    pantallas: 4,
-    otros: 12,
-  },
-  
-  // Altura de apilamiento vertical
-  apilamientoVertical: {
-    alturaPorUnidad: 0.08,  // 8cm por objeto apilado
-    maxPorColumna: 4,       // Máximo 4 objetos apilados
-  },
+  // Configuración avanzada
+  ARMARIO_CONFIG,
 }
+
 export default config

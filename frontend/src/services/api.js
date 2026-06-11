@@ -69,7 +69,7 @@ export const api = {
       body: JSON.stringify({ resource_code: code, location }),
     }),
 
-  // Usuaris (NestJS)
+  // Usuarios (NestJS)
   getUsers: (params = {}) => {
     const q = new URLSearchParams(
       Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
@@ -82,10 +82,10 @@ export const api = {
   updateUser: (id, data) => request(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteUser: (id) => request(`/users/${id}`, { method: 'DELETE' }),
 
-  // Assignacions
+  // Asignaciones
   getAssignments: () => request('/resources/assignments/current'),
 
-  // Admin - llista blanca
+  // Admin - lista blanca
   getWhitelist: () => request('/admin/whitelist'),
   addToWhitelist: (email) => request('/admin/whitelist', { method: 'POST', body: JSON.stringify({ email }) }),
   removeFromWhitelist: (email) => request(`/admin/whitelist/${encodeURIComponent(email)}`, { method: 'DELETE' }),
@@ -94,7 +94,7 @@ export const api = {
   getHelpDocsHistory: () => request('/admin/help-docs/history'),
   exportHelpDocsMarkdown: () => request('/admin/help-docs/export'),
 
-  // Elements 3D per sala
+  // Elementos 3D por sala
   getSpaceElements: (params = {}) => {
     const q = new URLSearchParams(
       Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
@@ -119,39 +119,18 @@ export const api = {
   createProjectTask: (projectId, data) => request(`/projects/${projectId}/tasks`, { method: 'POST', body: JSON.stringify(data) }),
   updateProjectTask: (taskId, data) => request(`/projects/tasks/${taskId}`, { method: 'PATCH', body: JSON.stringify(data) }),
   deleteProjectTask: (taskId) => request(`/projects/tasks/${taskId}`, { method: 'DELETE' }),
-  uploadProjectImage: async (projectId, file) => {
-    const token = getToken()
-    const formData = new FormData()
-    formData.append('file', file)
-    const res = await fetch(`/api/projects/${projectId}/upload-image`, {
-      method: 'POST',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`)
-    return res.json()
-  },
   exportProjectPdf: async (projectId, filename = `project-${projectId}.pdf`) => {
     const token = getToken()
     const res = await fetch(`/api/projects/${projectId}/export/pdf`, {
       method: 'GET',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
     })
-
     if (res.status === 401) {
       logout()
       window.location.href = '/login'
       return
     }
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} ${res.statusText}`)
-    }
-
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`)
     const blob = await res.blob()
     const url = URL.createObjectURL(blob)
     const anchor = document.createElement('a')
@@ -176,22 +155,8 @@ export const api = {
   deleteUdActivity: (id) => request(`/ud-activities/${id}`, { method: 'DELETE' }),
   linkUdActivityTask: (udActivityId, taskId) => request(`/ud-activities/${udActivityId}/link-task/${taskId}`, { method: 'POST' }),
   unlinkUdActivityTask: (taskId) => request(`/ud-activities/unlink-task/${taskId}`, { method: 'POST' }),
-  uploadUdActivityImage: async (udActivityId, file) => {
-    const token = getToken()
-    const formData = new FormData()
-    formData.append('file', file)
-    const res = await fetch(`/api/ud-activities/${udActivityId}/upload-image`, {
-      method: 'POST',
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      body: formData,
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`)
-    return res.json()
-  },
 
-  // Ubicaciones dinamicas de almacenamiento
+  // Ubicaciones dinámicas de almacenamiento
   getStorageLocations: (params = {}) => {
     const q = new URLSearchParams(
       Object.fromEntries(Object.entries(params).filter(([, v]) => v !== '' && v != null))
@@ -223,4 +188,29 @@ export const api = {
     return request(`/admin/reports/activities${q ? '?' + q : ''}`)
   },
   getStudentReport: (userId) => request(`/admin/reports/student/${userId}`),
+
+  // ============================================
+  // SUBIDA DE IMÁGENES (EVIDENCIAS DE ACTIVIDAD)
+  // ============================================
+  uploadActivityImage: async (formData) => {
+    const token = getToken()
+    const response = await fetch('/api/upload/activity-image', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData,
+    })
+    if (!response.ok) {
+      let errorMsg = 'Error subiendo imagen'
+      try {
+        const errData = await response.json()
+        errorMsg = errData.error || errData.message || errorMsg
+      } catch {}
+      throw new Error(errorMsg)
+    }
+    return response.json()
+  },
 }
+
+export default api

@@ -99,6 +99,7 @@ const MenuAdmin = () => {
         { path: '/dashboard?room=SALAPRU&view=joint', icon: '🧪', label: 'Vista conjunta SALAPRU' },
         { path: '/dashboard?room=SALATEST&activity=UD01&view=joint', icon: '🧫', label: 'Sala Test UD01' },
         { path: '/dashboard?room=AULA&compact=1', icon: '🧱', label: 'Maximizar espacio' },
+        ...(userIsAdmin ? [{ path: '/caja-herramientas', icon: '🔧', label: 'Sala gestión herramientas' }] : []),
       ],
     },
     {
@@ -119,7 +120,7 @@ const MenuAdmin = () => {
         { path: '/configuracion?tab=help', icon: '❓', label: 'Ayuda' },
       ],
     },
-  ]), [])
+  ]), [userIsAdmin])
 
   // ============================================
   // MENÚS EXTRA PARA BIP
@@ -150,7 +151,7 @@ const MenuAdmin = () => {
       ],
     },
     {
-      label: 'Armarios', icon: '🗄️',
+      label: 'Gestion Almacenamiento', icon: '🗄️',
       items: [
         { path: '/armario/1', icon: '🗄️', label: 'Armario N1' },
         { path: '/armario/2', icon: '🗄️', label: 'Armario N2' },
@@ -159,12 +160,13 @@ const MenuAdmin = () => {
         { path: '/armario/5', icon: '🗄️', label: 'Armario S2' },
         { path: '/armario/6', icon: '🗄️', label: 'Armario S3' },
         { path: '/armario/7', icon: '🔋', label: 'Armario Portátiles (carga)' },
-        { path: '/elemento', icon: '🧩', label: 'Editor de elementos' },
       ],
     },
     {
       label: 'Config General', icon: '⚙️',
       items: [
+        { path: '/elemento', icon: '🧩', label: 'Editor de elementos' },
+        { path: '/capture', icon: '📸', label: 'Captura de imagen' },
         { path: '/configuracion?tab=resource-design', icon: '🎨', label: 'Diseno recursos' },
         { path: '/configuracion', icon: '🔧', label: 'Generales' },
       ],

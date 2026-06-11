@@ -1,29 +1,45 @@
 // ============================================================
 // ARCHIVO: src/components/3d/core/GridSuelo.jsx
 // DESCRIPCIÓN: Componente 3D para el grid del suelo
-// VERSIÓN: 2.0 - Optimizado
+// VERSIÓN: 3.0 - Corregido
+// ============================================================
+// Este componente utiliza el Grid de @react-three/drei para crear un suelo cuadriculado
+// que ayuda a la orientación espacial en la sala.
+// ESCALA: 1 celda = 0.4 unidades = 40cm (referencia AulaTaller3D)
+// ============================================================
+// ============================================================
+// GridSuelo.jsx - Versión con líneas muy visibles
 // ============================================================
 
-import React from 'react'
-import { Grid } from '@react-three/drei'
-import { GRID, GRID_X_MIN, GRID_X_MAX, GRID_Z_MIN, GRID_Z_MAX, TILE_SIZE, GROUND_Y, COLORS } from './config'
+import React from 'react';
+import { Grid } from '@react-three/drei';
+import { ESCALA } from './escala.config';
 
-export const GridSuelo = () => {
+export const GridSuelo = ({ 
+  width = 4,
+  depth = 4,
+  position = [0, 0, 0]
+}) => {
+  const cellSize = ESCALA.CELL_SIZE;
+  const gridWidth = width * cellSize;
+  const gridDepth = depth * cellSize;
+  
   return (
     <Grid
-      position={[0, GROUND_Y, 0]}
-      args={[GRID.width * TILE_SIZE, GRID.depth * TILE_SIZE]}
-      cellSize={TILE_SIZE}
-      cellThickness={0.02}
-      cellColor={COLORS.gridLine}
-      sectionSize={TILE_SIZE * 2}
-      sectionThickness={0.04}
-      sectionColor={COLORS.gridLine}
-      fadeDistance={30}
-      fadeStrength={1}
+      position={position}
+      args={[gridWidth, gridDepth]}
+      cellSize={cellSize}
+      cellThickness={1}        // ← Más grueso (antes 0.04)
+      cellColor="#ffffff"
+      sectionSize={5}
+      sectionThickness={1}      // ← Más grueso (antes 0.08)
+      sectionColor="#ffffff"
+      fadeDistance={5}
+      fadeStrength={1.5}
       followCamera={false}
+      infiniteGrid={true}
     />
-  )
-}
+  );
+};
 
-export default GridSuelo
+export default GridSuelo;

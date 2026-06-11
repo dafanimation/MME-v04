@@ -3,6 +3,12 @@
 // DESCRIPCIÓN: Menú flotante arrastrable para insertar elementos
 // FUNCIÓN: Proporciona botones para añadir elementos al mapa 3D
 // ============================================================
+// IMPORTACIONES
+// React y hooks
+// Componente de menú flotante
+// ============================================================
+// Pages y servicios
+// ============================================================
 
 import React, { useState, useRef, useEffect } from 'react';
 

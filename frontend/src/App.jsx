@@ -18,10 +18,7 @@
 // /armario/:id    → Vista dedicada de armario (solo admin)
 // /               → Redirige a /dashboard
 //
-import ElementoViewMinimal from './pages/ElementoViewMinimal'
-
 // Añadir ruta
-<Route path="/test" element={<ElementoViewMinimal />} />
 // ============================================================
 
 import React from 'react';
@@ -49,6 +46,11 @@ import FichaRecurso from './components/ui/FichaRecurso';
 // ✅ NUEVA: Vista dedicada de armarios
 import ArmarioView from './pages/ArmarioView';
 import ElementoView from './pages/ElementoView';
+import CajaHerramientasView from './pages/CajaHerramientasView';
+
+// ✅ NUEVA: Vista de captura de imagen
+import CaptureView from './pages/CaptureView';
+
 
 // Estilos globales
 import './styles/global.css';
@@ -144,8 +146,28 @@ function App() {
         <Route
           path="/elemento"
           element={
-            <PrivateRoute requiredRole="admin">
+            //<PrivateRoute requiredRole="admin">
               <ElementoView />
+            //</PrivateRoute>
+          }
+        />
+        {/* Nueva vista para captura de imagen (acceso general) */}
+        <Route
+          path="/capture"
+          element={
+            // No se requiere rol específico para acceder a la cámara, cualquier usuario autenticado puede usarla
+            <PrivateRoute>
+              <CaptureView />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Sala de gestión de Caja de Herramientas */}
+        <Route
+          path="/caja-herramientas"
+          element={
+            <PrivateRoute requiredRole="admin">
+              <CajaHerramientasView />
             </PrivateRoute>
           }
         />

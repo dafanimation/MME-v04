@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
+import { GridSuelo } from '../3d/core/GridSuelo'
 import { Pc3D } from '../3d/entities/Pc3D'
 import { Portatil3D } from '../3d/entities/Portatil3D'
 import { Pantalla3D } from '../3d/entities/Pantalla3D'
@@ -61,6 +62,8 @@ const getEntityComponent = (entity, position) => {
       return <PiramideProyecto3D id={entity.id} position={position} />
     case 'herramienta':
       return <CajaHerramientas3D id={entity.id} position={position} />
+    case 'alicates':
+      return <AlicatesPicoDeLoro3D id={entity.id} position={position} />
     default:
       return null
   }
@@ -150,7 +153,7 @@ export const ElementoPreviewPanel = () => {
               <ambientLight intensity={0.5} />
               <directionalLight position={[3, 4, 2]} intensity={0.7} />
               <pointLight position={[-3, 3, -3]} intensity={0.3} />
-              <gridHelper args={[6, 12, '#2a3a5a', '#1a2a3a']} position={[0, -0.01, 0]} />
+              <GridSuelo />
               {selectedEntity && getEntityComponent(selectedEntity, { x: 0, y: 0.01, z: 0 })}
               <OrbitControls
                 enablePan

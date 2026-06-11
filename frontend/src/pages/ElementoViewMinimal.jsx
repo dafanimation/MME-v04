@@ -1,6 +1,7 @@
 // src/pages/ElementoViewMinimal.jsx
 import React from 'react'
 import { Canvas } from '@react-three/fiber'
+import { GridSuelo } from '../components/3d/core/GridSuelo'
 
 const ElementoViewMinimal = () => {
   return (
@@ -16,7 +17,7 @@ const ElementoViewMinimal = () => {
           <meshStandardMaterial color="#00ff88" />
         </mesh>
         
-        <gridHelper args={[6, 20]} position={[0, -0.5, 0]} />
+        <GridSuelo />
       </Canvas>
     </div>
   )

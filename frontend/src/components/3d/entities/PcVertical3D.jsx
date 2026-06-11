@@ -19,7 +19,7 @@ export const PcVertical3D = ({
   // Orientación vertical (torre)
   const width = 0.12   // más estrecho
   const height = 0.22  // más alto
-  const depth = 0.12
+  const depth = 0.3
   
   const color = isSelected ? COLORS.selected : (hovered ? '#88ff88' : '#00ff88')
   
